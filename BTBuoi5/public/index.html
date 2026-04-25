@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buổi 06 - Bài tập thực hành</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f9f9f9; padding: 20px; }
+        .container { display: flex; gap: 20px; max-width: 900px; margin: 0 auto; }
+        .form-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex: 1; }
+        h3 { color: #5ea394; font-size: 16px; margin-top: 0; text-transform: uppercase; }
+        label { display: block; margin-top: 10px; font-size: 14px; color: #333; }
+        input { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; margin-top: 15px; background-color: #178f69; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #127555; }
+        .result { margin-top: 15px; padding: 10px; background-color: #f4f4f4; border-radius: 4px; min-height: 40px; font-family: monospace; font-size: 13px; color: #333; white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+    <div style="max-width: 900px; margin: 0 auto 20px;">
+        <h2>Buổi 06 — Bài tập thực hành</h2>
+        <p style="color: #666; font-size: 14px;">Node.js + Express • Middleware • Routing • Fetch API</p>
+    </div>
+
+    <div class="container">
+        <div class="form-box">
+            <h3>Form 1 — Kiểm tra thông tin</h3>
+            <form id="form-get">
+                <label>Tên</label>
+                <input type="text" id="getName" placeholder="Nhập tên..." required>
+                
+                <label>Tuổi</label>
+                <input type="number" id="getAge" placeholder="Nhập tuổi..." required>
+                
+                <button type="submit">Gửi GET /api/info</button>
+            </form>
+            <div id="getResult" class="result">Kết quả sẽ hiện ở đây...</div>
+        </div>
+
+        <div class="form-box">
+            <h3>Form 2 — Đăng ký người dùng</h3>
+            <form id="form-post">
+                <label>Tên</label>
+                <input type="text" id="postName" placeholder="Nhập tên..." required>
+                
+                <label>Tuổi</label>
+                <input type="number" id="postAge" placeholder="Nhập tuổi..." required>
+                
+                <label>Email</label>
+                <input type="email" id="postEmail" placeholder="Nhập email..." required>
+                
+                <button type="submit">Gửi POST /api/register</button>
+            </form>
+            <div id="postResult" class="result">Kết quả sẽ hiện ở đây...</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('form-get').addEventListener('submit', function(event) {
+            event.preventDefault(); // Ngăn reload trang
+            
+            const name = document.getElementById('getName').value;
+            const age = document.getElementById('getAge').value;
+            const resultBox = document.getElementById('getResult');
+
+            resultBox.innerText = 'Đang xử lý...';
+
+            fetch(`/api/info?name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`)
+                .then(res => res.json())
+                .then(data => {
+                    resultBox.innerText = JSON.stringify(data, null, 2);
+                })
+                .catch(err => {
+                    resultBox.innerText = 'Lỗi kết nối: ' + err;
+                });
+        });
+
+        document.getElementById('form-post').addEventListener('submit', function(event) {
+            event.preventDefault(); // Ngăn reload trang
+            
+            const name = document.getElementById('postName').value;
+            const age = document.getElementById('postAge').value;
+            const email = document.getElementById('postEmail').value;
+            const resultBox = document.getElementById('postResult');
+
+            resultBox.innerText = 'Đang xử lý...';
+
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, age, email })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    resultBox.innerText = JSON.stringify(data, null, 2);
+                })
+                .catch(err => {
+                    resultBox.innerText = 'Lỗi kết nối: ' + err;
+                });
+        });
+    </script>
+</body>
+</html>
